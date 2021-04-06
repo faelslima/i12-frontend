@@ -1,0 +1,75 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <div class="modal-title h4" id="example-modal-sizes-title-lg">
+            <ng-container *ngIf="entity">
+                <ng-container *ngIf="entity.id">Alterar</ng-container>
+                <ng-container *ngIf="!entity.id">Adicionar</ng-container>
+                Turma
+                <ng-container *ngIf="entity.id"> de {{entity.diaSemana}}</ng-container>
+            </ng-container>
+        </div>
+    </div>
+    <div class="overlay overlay-block cursor-default modal-body" style="min-height: 404px;">
+        <ng-container *ngIf="isLoading$ | async">
+            <div class="overlay-layer bg-transparent">
+                <div class="spinner spinner-lg spinner-success"></div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="entity">
+            <form action="#" class="form form-label-right" [formGroup]="formGroup">
+                <div class="form-group row">
+                    <div class="col-lg-3">
+                        <label class="form-label">Data de Início</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="dataInicio"
+                               placeholder="dia / mês / ano" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('dataInicio')"
+                               mask="d0/M0/0000" [leadZeroDateTime]="true" [dropSpecialCharacters]="false"
+                               formControlName="dataInicio"
+                        />
+                    </div>
+
+                    <div class="col-lg-2">
+                        <label class="form-label">Hora da Aula</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="horaAula"
+                               placeholder="19:30" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('horaAula')"
+                               mask="Hh:m0" [leadZeroDateTime]="true" [dropSpecialCharacters]="false"
+                               formControlName="horaAula"
+                        />
+                    </div>
+
+                    <div class="col-lg-3">
+                        <label class="form-label">Dia da Semana</label>
+                        <select class="form-control form-control-lg form-control-solid" name="diaSemana"
+                                [class.is-invalid]="isControlInvalid('diaSemana')" formControlName="diaSemana">
+                            <option *ngFor='let item of diasSemana'
+                                    [selected]="entity.diaSemana && entity.diaSemana == item"
+                                    [value]="item">{{item}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-lg-4">
+                        <label class="form-label">Local das Aulas</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="local"
+                               placeholder="Exemplo: Igreja" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('local')"
+                               formControlName="local"
+                        />
+                    </div>
+                </div>
+            </form>
+        </ng-container>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light btn-elevate mr-2" (click)="modal.dismiss()">Cancelar</button>
+        <ng-container *ngIf="entity">
+
+            <button type="submit" class="btn btn-primary btn-elevate" (click)="save()"
+                    [disabled]="formGroup.invalid">Salvar
+            </button>
+        </ng-container>
+    </div>
+</div>

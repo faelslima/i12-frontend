@@ -1,0 +1,193 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <div class="modal-title h4" id="example-modal-sizes-title-lg">
+            <ng-container *ngIf="entity">
+                <ng-container *ngIf="entity.id">Alterar</ng-container>
+                <ng-container *ngIf="!entity.id">Adicionar</ng-container>
+                Encontrista
+                <ng-container *ngIf="entity.id">{{entity.pessoa?.nome}}</ng-container>
+            </ng-container>
+        </div>
+    </div>
+    <div class="overlay overlay-block cursor-default modal-body" style="min-height: 404px;">
+        <ng-container *ngIf="isLoading$ | async">
+            <div class="overlay-layer bg-transparent">
+                <div class="spinner spinner-lg spinner-success"></div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="entity">
+            <form action="#" class="form form-label-right" [formGroup]="formGroup">
+                <div class="form-group row">
+                    <div class="col-lg-3">
+                        <label class="form-label">Igreja:</label>
+                        <select class="form-control form-control-lg form-control-solid" name="igreja"
+                                (change)="onChangeIgreja()"
+                                [class.is-invalid]="isControlInvalid('igreja')" formControlName="igreja">
+                            <option *ngFor='let igreja of igrejas'
+                                    [selected]="entity.pessoa.igreja && entity.pessoa.igreja.id == igreja.id"
+                                    [value]="igreja.id">{{igreja.sigla}}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <label class="form-label">Descendencia:</label>
+                        <select class="form-control form-control-lg form-control-solid" name="descendencia"
+                                [class.is-invalid]="isControlInvalid('descendencia')" formControlName="descendencia">
+                            <option *ngFor='let descendencia of descendencias'
+                                    [selected]="entity.pessoa.descendencia && entity.pessoa.descendencia.id == descendencia.id"
+                                    [value]="descendencia.id">{{descendencia.sigla}}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-7">
+                        <mat-form-field class="example-full-width">
+                            <mat-label>Líder:</mat-label>
+                            <input type="text" class="form-control form-control-lg form-control-solid"
+                                   name="lider"
+                                   matInput [matAutocomplete]="autoLider"
+                                   [class.is-invalid]="isControlInvalid('lider')"
+                                   formControlName="lider"
+                            />
+                            <mat-autocomplete #autoLider="matAutocomplete" [displayWith]="displayPessoa">
+                                <mat-option *ngIf="isLoadingPessoa" class="is-loading">Pesquisando...</mat-option>
+                                <ng-container *ngIf="!isLoadingPessoa">
+                                    <mat-option *ngFor="let option of pessoas" [value]="option">
+                                        <span>{{option.nome}}</span>
+                                    </mat-option>
+                                </ng-container>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-lg-6">
+                        <label class="form-label">Nome:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="nome"
+                               placeholder="Nome Completo" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('nome')"
+                               [class.is-valid]="isControlValid('nome')" formControlName="nome"/>
+                        <div class="valid-feedback" *ngIf="isControlValid('nome')">Nome</div>
+                        <div class="invalid-feedback" *ngIf="controlHasError('required', 'nome')">Nome é obrigatório
+                        </div>
+                        <div class="invalid-feedback" *ngIf="controlHasError('minlength', 'nome')">Nome deve possuir
+                            pelo menos 03 digitos
+                        </div>
+                        <div class="invalid-feedback" *ngIf="controlHasError('maxLength', 'nome')">Nome deve possuir no
+                            máximo 100 dígitos
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <label class="form-label">Apelido</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid  is-invalid"
+                               name="apelido"
+                               placeholder="Apelido" autocomplete="off" [class.is-invalid]="isControlInvalid('apelido')"
+                               [class.is-valid]="isControlValid('apelido')" formControlName="apelido"/>
+                        <div class="valid-feedback" *ngIf="isControlValid('apelido')">Apelido está correto</div>
+                        <div class="invalid-feedback" *ngIf="controlHasError('required', 'apelido')">Apelido é
+                            obrigatório
+                        </div>
+                        <div class="invalid-feedback" *ngIf="controlHasError('minlength', 'apelido')">Apelido deve
+                            possuir pelo menos 03 caracteres
+                        </div>
+                        <div class="invalid-feedback" *ngIf="controlHasError('maxLength', 'apelido')">Apelido deve
+                            possuir no máximo 20 caracteres
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-lg-2">
+                        <label class="form-label">Data de Nascimento</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid  is-invalid"
+                               name="dataNascimento" mask="d0/M0/0000" [leadZeroDateTime]="true"
+                               [dropSpecialCharacters]="false"
+                               placeholder="dia / mês / ano" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('dataNascimento')"
+                               [class.is-valid]="isControlValid('apelido')" formControlName="dataNascimento"/>
+                        <div class="invalid-feedback" *ngIf="controlHasError('required', 'dataNascimento')">Data de
+                            Nascimento é
+                            obrigatório
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <label>Gênero</label>
+                        <select class="form-control form-control-lg form-control-solid" name="sexo"
+                                [class.is-invalid]="isControlInvalid('sexo')" formControlName="sexo">
+                            <option value="M" [selected]="entity.pessoa.sexo == 'M'">Masculino</option>
+                            <option value="F" [selected]="entity.pessoa.sexo == 'F'">Feminino</option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control form-control-lg form-control-solid" name="email"
+                               placeholder="Email"
+                               autocomplete="off" [class.is-invalid]="isControlInvalid('email')"
+                               [class.is-valid]="isControlValid('email')" formControlName="email"/>
+                        <div class="valid-feedback" *ngIf="isControlValid('email')">Email está válido</div>
+                        <div class="invalid-feedback" *ngIf="controlHasError('required', 'email')">Email é obrigatório
+                        </div>
+                        <div class="invalid-feedback" *ngIf="controlHasError('email', 'email')">Formato de email está
+                            inválido
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <label class="form-label">Telefone</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="telefone"
+                               placeholder="(xx) x xxxx-xxxx" mask="(00) 0 0000-0000||(00) 0000-0000"
+                               autocomplete="off" [class.is-invalid]="isControlInvalid('telefone')"
+                               [class.is-valid]="isControlValid('telefone')" formControlName="telefone"/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-lg-12">
+                        <hr />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-lg-3">
+                        <label class="form-label">Tipo de Pagamento:</label>
+                        <select class="form-control form-control-lg form-control-solid" name="pagamentoTipo"
+                                [class.is-invalid]="isControlInvalid('pagamentoTipo')" formControlName="pagamentoTipo">
+                            <option *ngFor='let item of tiposPagamento'
+                                    [selected]="entity.pagamento?.pagamentoTipo && entity.pagamento.pagamentoTipo == item"
+                                    [value]="item">{{item}}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <label class="form-label">Valor Pago:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="valorPago"
+                               placeholder="R$" prefix="R$ " mask="separator.2" thousandSeparator="."
+                               autocomplete="off" [class.is-invalid]="isControlInvalid('valorPago')"
+                               [class.is-valid]="isControlValid('valorPago')" formControlName="valorPago"/>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <label class="form-label">Observação:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="observacao"
+                               placeholder="Obs.:"
+                               autocomplete="off" [class.is-invalid]="isControlInvalid('observacao')"
+                               [class.is-valid]="isControlValid('telefone')" formControlName="observacao"/>
+                    </div>
+                </div>
+
+            </form>
+        </ng-container>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light btn-elevate mr-2" (click)="modal.dismiss()">Cancelar</button>
+        <ng-container *ngIf="entity">
+
+            <button type="submit" class="btn btn-primary btn-elevate" (click)="save()"
+                    [disabled]="formGroup.invalid">Salvar
+            </button>
+        </ng-container>
+    </div>
+</div>

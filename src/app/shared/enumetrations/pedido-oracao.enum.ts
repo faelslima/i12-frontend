@@ -1,0 +1,8 @@
+export enum PedidoOracaoEnum {
+    FAMILIA = 'FAMILIA',
+    FINANCEIRA = 'FINANCEIRA',
+    SAUDE = 'SAUDE',
+    MINISTERIAL = 'MINISTERIAL',
+    CASAMENTO = 'CASAMENTO',
+    TRABALHO = 'TRABALHO'
+}

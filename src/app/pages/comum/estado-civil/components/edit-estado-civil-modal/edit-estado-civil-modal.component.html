@@ -1,0 +1,53 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <div class="modal-title h4" id="example-modal-sizes-title-lg">
+            <ng-container *ngIf="entity">
+                <ng-container *ngIf="entity.id">Alterar</ng-container>
+                <ng-container *ngIf="!entity.id">Adicionar</ng-container>
+                {{entityName}}
+                <ng-container *ngIf="entity.id">'{{entity.descricao}}'</ng-container>
+            </ng-container>
+        </div>
+    </div>
+    <div class="overlay overlay-block cursor-default modal-body" style="min-height: 404px;">
+        <ng-container *ngIf="isLoading$ | async">
+            <div class="overlay-layer bg-transparent">
+                <div class="spinner spinner-lg spinner-success"></div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="entity">
+            <form action="#" class="form form-label-right" [formGroup]="formGroup">
+                <div class="form-group row">
+                    <div class="col-lg-4">
+                        <label class="form-label">Descrição:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="descricao"
+                               placeholder="Descrição" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('descricao')"
+                               [class.is-valid]="isControlValid('descricao')" formControlName="descricao"/>
+                        <div class="valid-feedback" *ngIf="isControlValid('descricao')">Descrição</div>
+                        <div class="invalid-feedback" *ngIf="controlHasError('required', 'descricao')">Descrição é
+                            obrigatório
+                        </div>
+                        <div class="invalid-feedback" *ngIf="controlHasError('minlength', 'descricao')">Descrição deve
+                            possuir
+                            pelo menos 03 digitos
+                        </div>
+                        <div class="invalid-feedback" *ngIf="controlHasError('maxLength', 'descricao')">Descrição deve
+                            possuir no
+                            máximo 100 dígitos
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </ng-container>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light btn-elevate mr-2" (click)="modal.dismiss()">Cancelar</button>
+        <ng-container *ngIf="entity">
+            <button type="submit" class="btn btn-primary btn-elevate" (click)="save()"
+                    [disabled]="formGroup.invalid">Salvar
+            </button>
+        </ng-container>
+    </div>
+</div>

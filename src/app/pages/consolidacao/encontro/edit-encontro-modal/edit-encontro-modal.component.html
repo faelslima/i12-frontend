@@ -1,0 +1,78 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <div class="modal-title h4" id="example-modal-sizes-title-lg">
+            <ng-container *ngIf="entityModel">
+                <ng-container *ngIf="entityModel.id">Alterar</ng-container>
+                <ng-container *ngIf="!entityModel.id">Adicionar</ng-container>
+                Encontro com Deus
+            </ng-container>
+        </div>
+    </div>
+    <div class="overlay overlay-block cursor-default modal-body" style="min-height: 404px;">
+        <ng-container *ngIf="isLoading$ | async">
+            <div class="overlay-layer bg-transparent">
+                <div class="spinner spinner-lg spinner-success"></div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="entityModel">
+            <form action="#" class="form form-label-right" [formGroup]="formGroup">
+                <div class="form-group row">
+                    <div class="col-lg-2">
+                        <label class="form-label">Data de Início:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="dataInicio"
+                               placeholder="dia / mês / ano" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('dataInicio')"
+                               mask="d0/M0/0000" [leadZeroDateTime]="true" [dropSpecialCharacters]="false"
+                               formControlName="dataInicio"
+                        />
+                    </div>
+
+                    <div class="col-lg-2">
+                        <label class="form-label">Data de Encerramento:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="dataFim"
+                               placeholder="dia / mês / ano" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('dataFim')"
+                               mask="d0/M0/0000" [leadZeroDateTime]="true" [dropSpecialCharacters]="false"
+                               formControlName="dataFim"
+                        />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <label class="form-label">Descrição:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="descricao"
+                               placeholder="Encontro com Deus para Homems" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('descricao')"
+                               formControlName="descricao"
+                        />
+                        <div class="invalid-feedback" *ngIf="controlHasError('required', 'descricao')">Descrição é
+                            obrigatória
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <label class="form-label">Local do Encontro:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="local"
+                               placeholder="Sítio Linha Real" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('local')"
+                               formControlName="local"
+                        />
+                        <div class="invalid-feedback" *ngIf="controlHasError('required', 'local')">Local é
+                            obrigatório
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </ng-container>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light btn-elevate mr-2" (click)="modal.dismiss()">Cancelar</button>
+        <ng-container *ngIf="entityModel">
+            <button type="submit" class="btn btn-primary btn-elevate" (click)="save()"
+                    [disabled]="formGroup.invalid">Salvar
+            </button>
+        </ng-container>
+    </div>
+</div>

@@ -1,0 +1,209 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <div class="modal-title h4" id="example-modal-sizes-title-lg">
+            <ng-container *ngIf="novaVidaModel">
+                <ng-container *ngIf="novaVidaModel.id">Alterar</ng-container>
+                <ng-container *ngIf="!novaVidaModel.id">Adicionar</ng-container>
+                Nova Vida
+                <ng-container *ngIf="novaVidaModel.id">'{{novaVidaModel.nome}}'</ng-container>
+            </ng-container>
+        </div>
+    </div>
+    <div class="overlay overlay-block cursor-default modal-body" style="min-height: 404px;">
+        <ng-container *ngIf="isLoading$ | async">
+            <div class="overlay-layer bg-transparent">
+                <div class="spinner spinner-lg spinner-success"></div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="novaVidaModel">
+            <form action="#" class="form form-label-right" [formGroup]="formGroup">
+                <div class="form-group row">
+                    <div class="col-lg-4">
+                        <label class="form-label">Tipo de Conversão:</label>
+                        <select class="form-control form-control-lg form-control-solid" name="tipoConfissao"
+                                [class.is-invalid]="isControlInvalid('tipoConfissao')" formControlName="tipoConfissao">
+                            <option *ngFor='let item of tiposConfissao'
+                                    [selected]="novaVidaModel.tipoConfissao && novaVidaModel.tipoConfissao == item"
+                                    [value]="item">{{item}}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <label class="form-label">Pedido de Oração:</label>
+                        <select class="form-control form-control-lg form-control-solid" name="pedidoOracao"
+                                [class.is-invalid]="isControlInvalid('pedidoOracao')" formControlName="pedidoOracao">
+                            <option *ngFor='let item of pedidosOracao'
+                                    [selected]="novaVidaModel.pedidoOracao && novaVidaModel.pedidoOracao == item"
+                                    [value]="item">{{item}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-lg-6">
+                        <label class="form-label">Nome:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="nome"
+                               placeholder="Nome" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('nome')"
+                               formControlName="nome"
+                        />
+                        <div class="invalid-feedback" *ngIf="controlHasError('required', 'nome')">Nome é obrigatório
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <label class="form-label">Data de Nascimento:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="dataNascimento"
+                               placeholder="dia / mês / ano" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('dataNascimento')"
+                               mask="d0/M0/0000" [leadZeroDateTime]="true" [dropSpecialCharacters]="false"
+                               formControlName="dataNascimento"
+                        />
+                    </div>
+
+                    <div class="col-lg-3">
+                        <label class="form-label">Gênero:</label>
+                        <select matInput class="form-control form-control-lg form-control-solid" name="sexo"
+                                [class.is-invalid]="isControlInvalid('sexo')"
+                                formControlName="sexo">
+                            <option *ngFor='let item of tipoSexo'
+                                    [selected]="novaVidaModel.sexo && novaVidaModel.sexo == item.value"
+                                    [value]="item.value">{{item.descricao}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-lg-3">
+                        <label class="form-label">Telefone:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="telefone"
+                               placeholder="(xx) x xxxx-xxxx" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('telefone')"
+                               mask="(00) 0000-0000||(00) 0 0000-0000"
+                               formControlName="telefone"
+                        />
+                    </div>
+
+                    <div class="col-lg-8">
+                        <label class="form-label">Email:</label>
+                        <input type="email" class="form-control form-control-lg form-control-solid" name="email"
+                               placeholder="email@seuemail.com" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('email')"
+                               formControlName="email"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-lg-4">
+                        <label>Descendência:</label>
+                            <select matInput class="form-control form-control-lg form-control-solid" name="descendencia"
+                                    [class.is-invalid]="isControlInvalid('descendencia')"
+                                    formControlName="descendencia">
+                                <option *ngFor='let descendencia of descendencias'
+                                        [selected]="novaVidaModel.descendencia && novaVidaModel.descendencia.id == descendencia.id"
+                                        [value]="descendencia.id">{{descendencia.sigla}}</option>
+                            </select>
+                    </div>
+
+                    <div class="col-lg-8">
+                        <mat-form-field class="example-full-width">
+                            <mat-label>Líder:</mat-label>
+                            <input type="text" class="form-control form-control-lg form-control-solid"
+                                   name="lider"
+                                   matInput [matAutocomplete]="autoLider"
+                                   [class.is-invalid]="isControlInvalid('lider')"
+                                   formControlName="lider"
+                            />
+                            <mat-autocomplete #autoLider="matAutocomplete" [displayWith]="displayPessoa">
+                                <mat-option *ngIf="isLoadingPessoa" class="is-loading">Pesquisando...</mat-option>
+                                <ng-container *ngIf="!isLoadingPessoa">
+                                    <mat-option *ngFor="let option of pessoas" [value]="option">
+                                        <span>{{option.nome}}</span>
+                                    </mat-option>
+                                </ng-container>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-lg-5">
+                        <label class="form-label">Logradouro:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid"
+                               name="enderecoLogradouro"
+                               placeholder="Nome da rua" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('enderecoLogradouro')"
+                               formControlName="enderecoLogradouro"
+                        />
+                    </div>
+
+                    <div class="col-lg-3">
+                        <label class="form-label">Número:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid"
+                               name="enderecoLogradouroNumero"
+                               placeholder="Nº" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('enderecoLogradouroNumero')"
+                               formControlName="enderecoLogradouroNumero"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-lg-4">
+                        <label class="form-label">Bairro:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid" name="enderecoBairro"
+                               placeholder="Bairro" autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('enderecoBairro')"
+                               formControlName="enderecoBairro"
+                        />
+                    </div>
+
+                    <div class="col-lg-2">
+                        <label class="form-label">CEP:</label>
+                        <input type="text" class="form-control form-control-lg form-control-solid"
+                               name="enderecoLogradouroCep"
+                               placeholder="XX.XXX-XXX"
+                               mask="00.000-000"
+                               autocomplete="off"
+                               [class.is-invalid]="isControlInvalid('enderecoLogradouroCep')"
+                               formControlName="enderecoLogradouroCep"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-lg-6">
+                        <mat-form-field class="example-full-width">
+                            <label class="form-label">Cidade:</label>
+                            <input type="text" class="form-control form-control-lg form-control-solid"
+                                   name="enderecoCidade"
+                                   matInput [matAutocomplete]="auto"
+                                   [class.is-invalid]="isControlInvalid('enderecoCidade')"
+                                   formControlName="enderecoCidade"
+                            />
+                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCidade">
+                                <mat-option *ngIf="isLoadingCidade" class="is-loading">Pesquisando...</mat-option>
+                                <ng-container *ngIf="!isLoadingCidade">
+                                    <mat-option *ngFor="let option of cidades" [value]="option">
+                                        <span>{{option.descricao}}, {{option.uf}}</span>
+                                    </mat-option>
+                                </ng-container>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </form>
+        </ng-container>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light btn-elevate mr-2" (click)="modal.dismiss()">Cancelar</button>
+        <ng-container *ngIf="novaVidaModel">
+
+            <button type="submit" class="btn btn-primary btn-elevate" (click)="save()"
+                    [disabled]="formGroup.invalid">Salvar
+            </button>
+        </ng-container>
+    </div>
+</div>

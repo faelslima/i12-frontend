@@ -1,0 +1,72 @@
+<div class="card card-custom gutter-b">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">{{entityName}}</h3>
+        </div>
+        <div class="card-toolbar">
+            <button type="button" class="btn btn-primary" (click)="create()">Adicionar</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- begin: Filtration form -->
+        <div class="form form-label-right">
+            <div class="form-group row" [formGroup]="filterGroup">
+                <div class="col-lg-4">
+                    <input type="text" class="form-control" name="descricao" placeholder="Descrição" value=""
+                           formControlName="descricao"/>
+                </div>
+            </div>
+        </div>
+        <!-- end: Filtration form -->
+
+        <!-- begin:Table -->
+        <div class="table-responsive angular-bootstrap-table">
+            <table class="table table-head-custom table-vertical-center overflow-hidden">
+                <thead>
+                <th class="selection-cell-header" data-row-selection="true">
+                    <label class="checkbox checkbox-single">
+                        <input type="checkbox" (click)="grouping.selectAllRows()"
+                               [checked]="grouping.checkAreAllRowsSelected()"/><span></span></label>
+                </th>
+                <th>
+                    DESCRIÇÃO
+                    <app-sort-icon column="descricao" [activeColumn]="sorting.column"
+                                   [activeDirection]="sorting.direction"
+                                   (sort)="sort($event)"></app-sort-icon>
+                </th>
+                <th>Ações</th>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of entityService.items$ | async">
+                    <td class="selection-cell">
+                        <label class="checkbox checkbox-single"><input type="checkbox"
+                                                                       (click)="grouping.selectRow(item.id)"
+                                                                       [checked]="grouping.isRowSelected(item.id)"/>
+                            <span></span>
+                        </label>
+                    </td>
+                    <td>{{ item.descricao }}</td>
+                    <td>
+                        <a title="Alterar" class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3"
+                           (click)="edit(item.id)">
+                <span [inlineSVG]="'./assets/media/svg/icons/Communication/Write.svg'" cacheSVG="true"
+                      class="svg-icon svg-icon-md svg-icon-primary">
+                </span>
+                        </a>
+
+                        <a title="Delete customer" class="btn btn-icon btn-light btn-hover-danger btn-sm"
+                           (click)="delete(item.id)">
+                <span [inlineSVG]="'./assets/media/svg/icons/General/Trash.svg'" cacheSVG="true"
+                      class="svg-icon svg-icon-md svg-icon-danger">
+                </span>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- end: Table -->
+        <app-paginator class="d-flex justify-content-between align-items-center flex-wrap" [paginator]="paginator"
+                       [isLoading]="isLoading" (paginate)="paginate($event)"></app-paginator>
+    </div>
+</div>

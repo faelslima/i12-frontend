@@ -1,0 +1,107 @@
+<div class="card card-custom gutter-b">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Alunos</h3>
+        </div>
+        <div class="card-toolbar">
+            <a class="btn btn-warning" routerLink="/univida" routerLinkActive="active">Voltar</a>
+            &nbsp;<button type="button" class="btn btn-primary" (click)="create()">Adicionar</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- begin: Filtration form -->
+        <div class="form form-label-right" *ngIf="false">
+            <div class="form-group row" [formGroup]="filterGroup">
+                <div class="col-lg-4">
+                    <select class="form-control" name="igreja" placeholder="Filtrar por Igreja" formControlName="igreja">
+                        <option value="">Todas</option>
+                        <option *ngFor='let igreja of igrejas' [value]="igreja.id">{{igreja.sigla}}</option>
+                    </select><small class="form-text text-muted"><b>Filtrar</b> por igreja</small>
+                </div>
+                <div class="col-lg-4">
+                    <input type="text" class="form-control" name="nome" placeholder="Nome completo" value=""
+                           formControlName="nome"/>
+                </div>
+
+            </div>
+        </div>
+        <!-- end: Filtration form -->
+
+        <!-- begin:Table -->
+        <div class="table-responsive angular-bootstrap-table">
+            <table class="table table-head-custom table-vertical-center overflow-hidden">
+                <thead>
+                <th class="selection-cell-header" data-row-selection="true">
+                    <label class="checkbox checkbox-single">
+                        <input type="checkbox" (click)="grouping.selectAllRows()"
+                               [checked]="grouping.checkAreAllRowsSelected()"/><span></span></label>
+                </th>
+                <th>
+                    NOME
+                    <app-sort-icon column="nome" [activeColumn]="sorting.column"
+                                   [activeDirection]="sorting.direction"
+                                   (sort)="sort($event)"></app-sort-icon>
+                </th>
+                <th>
+                    APELIDO
+                    <app-sort-icon column="apelido" [activeColumn]="sorting.column"
+                                   [activeDirection]="sorting.direction"
+                                   (sort)="sort($event)"></app-sort-icon>
+                </th>
+                <th>
+                    TELEFONE
+                    <app-sort-icon column="telefoneCelular" [activeColumn]="sorting.column"
+                                   [activeDirection]="sorting.direction"
+                                   (sort)="sort($event)"></app-sort-icon>
+                </th>
+                <th>
+                    DESCENDENCIA
+                    <app-sort-icon column="descendencia" [activeColumn]="sorting.column"
+                                   [activeDirection]="sorting.direction"
+                                   (sort)="sort($event)"></app-sort-icon>
+                </th>
+                <th>
+                    LÍDER
+                    <app-sort-icon column="lider.nome" [activeColumn]="sorting.column" [activeDirection]="sorting.direction"
+                                   (sort)="sort($event)"></app-sort-icon>
+                </th>
+                <th>Ações</th>
+                </thead>
+                <tbody>
+                <tr *ngFor="let aluno of entityService.items$ | async">
+                    <td class="selection-cell">
+                        <label class="checkbox checkbox-single"><input type="checkbox"
+                                                                       (click)="grouping.selectRow(aluno.id)"
+                                                                       [checked]="grouping.isRowSelected(aluno.id)"/>
+                            <span></span>
+                        </label>
+                    </td>
+                    <td>{{ aluno.pessoa?.nome }}</td>
+                    <td>{{ aluno.pessoa?.apelido }}</td>
+                    <td>{{ aluno.pessoa?.telefoneCelular | mask: '(00) 0 0000-0000||(00) 0000-0000'}}</td>
+                    <td>{{ aluno.pessoa?.descendencia?.sigla }}</td>
+                    <td>{{ aluno.pessoa?.lider?.nome}}</td>
+                    <td>
+                        <a title="Alterar" class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3"
+                           (click)="edit(aluno.id)">
+                <span [inlineSVG]="'./assets/media/svg/icons/Communication/Write.svg'" cacheSVG="true"
+                      class="svg-icon svg-icon-md svg-icon-primary">
+                </span>
+                        </a>
+
+                        <a title="Delete customer" class="btn btn-icon btn-light btn-hover-danger btn-sm"
+                           (click)="delete(aluno.id)">
+                <span [inlineSVG]="'./assets/media/svg/icons/General/Trash.svg'" cacheSVG="true"
+                      class="svg-icon svg-icon-md svg-icon-danger">
+                </span>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- end: Table -->
+        <app-paginator class="d-flex justify-content-between align-items-center flex-wrap" [paginator]="paginator"
+                       [isLoading]="isLoading" (paginate)="paginate($event)"></app-paginator>
+    </div>
+</div>
